@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 29 21:27:32 2020
+
+@author: utpal
+"""
+import numpy as np
+import math
+import cmath
+import matplotlib.pyplot as plt
+
+class ApparentResist():
+      def __init__(self, frequency, sigma, thick):
+            self.frequency = frequency
+            self.sigma = sigma
+            self.thick = thick
+            
+      def params(self):
+            f = np.array(self.frequency)
+            f = f.reshape(1, f.shape[0])
+            omega = 2*math.pi*f
+            mu = 4*math.pi*10**-7
+            sigma = np.array(self.sigma)
+            sigma = sigma.reshape(sigma.shape[0], 1)
+            
+            lay = sigma.shape[0]
+            
+            z = np.zeros((lay, f.shape[1]), dtype = complex)
+            z[lay-1] = self._impedance_last(mu, sigma[sigma.shape[0]-1], omega)
+            
+            lay = lay-2
+            while lay >= 0:
+#                  z[lay] = -1*omega*mu + z[lay-1]
+                  z[lay] = (-1*omega*mu/self._wavenumber(mu, sigma, omega)[lay])/np.tan((complex(0,1)*300*(self._wavenumber(mu, sigma, omega)[lay])) - ((self._wavenumber(mu, sigma, omega)[lay])/omega*mu) * z[lay-1])
+#                  z[lay] = (-1*omega*mu/self._wavenumber(mu, sigma, omega)[lay])/np.tan((complex(0,1)*(self._wavenumber(mu, sigma, omega)[lay])))
+                  
+                  
+                  lay = lay - 1
+                  
+            z = np.absolute(z)      
+#            plt.plot(f, z[0].reshape(1,25))
+            
+            print(z[1])
+            
+            
+            
+      def _wavenumber(self, mu, sigma, omega):
+            return np.sqrt(-1*complex(0,1)*mu*np.dot(sigma, omega))
+      
+      
+      def _impedance_last(self, mu, sigma, omega):
+            return omega*mu/self._wavenumber(omega, mu, sigma)
+  
+      
+      
+if __name__ == '__main__':
+      Apparent = ApparentResist(frequency = [0.00001000, 0.00001778, 0.00003162, 0.00005623, 0.00010000, 0.00017783, 0.00031623, 0.00056234, 0.00100000, 0.00177828, 0.00316228, 0.00562341, 0.01000000, 0.01778279, 0.03162278, 0.05623413, 0.10000000, 0.17782794, 0.31622777, 0.56234133, 1.00000000, 1.77827941, 3.16227766, 5.62341325, 10.00000000], sigma = [0.1, 0.01], thick = [1000, [300, 3000, 10000]])
+      Apparent.params()
+      
+      
