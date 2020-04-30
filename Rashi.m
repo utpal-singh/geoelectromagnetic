@@ -13,11 +13,11 @@ t=[1000, 300
     1000, 3000];
 m=size(t,1);
 p = size(t,2)
-res=zeros(n,length(f));
+res=zeros(n, length(f));
 res(n,:) = z
 
 for k = n-1:-1:1
-    res(k,:)=-1*w*u./sqrt(-1*i*w*u*sigma(k)).*coth((i*sqrt(-1*i*w*u*sigma(k)).*t(1,k))-acoth((sqrt(-1*i*w*u*sigma(k))./w*u).*res(k+1,:)));
+    res(k, :)=-1*w*u./sqrt(-1*i*w*u*sigma(k)).*coth((i*sqrt(-1*i*w*u*sigma(k)).*t(1,k))-acoth((sqrt(-1*i*w*u*sigma(k))./w*u).*res(k+1,:)));
 end
     
 
